@@ -10,6 +10,8 @@ import com.lw.dto.SellOrder;
 import com.lw.excel.ExpressOrderExcelRead;
 import com.lw.excel.SellOrderExcelRead;
 import com.lw.h2.H2Connection;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -18,11 +20,15 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class MainClass {
+    public static Logger logger = LoggerFactory.getLogger(MainClass.class);
     public static void main(String[] args) {
-        //C:\Users\wsj60\Desktop\韵达快递费账单\韵达黄林峰对账单 2021-09.xlsx
+        //C:\Users\wsj60\Desktop\韵达快递费账单\韵达黄林峰对账单2021-09.xlsx
         String expressFile = args[0];
+//        String expressFile = "C:\\Users\\wsj60\\Desktop\\韵达快递费账单\\韵达黄林峰对账单2021-09.xlsx";
+
         //C:\Users\wsj60\Desktop\韵达快递费账单\导出\9月韵达.xlsx
         String sellFile = args[1];
+//        String sellFile = "C:\\Users\\wsj60\\Desktop\\韵达快递费账单\\导出\\9月韵达.xlsx";
 
         long start = System.currentTimeMillis();
         ArrayList<SellOrder> sellOrders = SellOrderExcelRead.readExcel(sellFile);
@@ -60,15 +66,15 @@ public class MainClass {
                 update.setString(2, names);
                 update.setString(3, expressNo);
                 int i = update.executeUpdate();
-                System.out.println("update sql expressNo=" + expressNo + ",and effect rows=" + i);
+                logger.info("update sql expressNo={},and effect rows={}", expressNo, i);
 
                 PreparedStatement delete = conn.prepareStatement(sql4);
                 delete.setString(1, expressNo);
                 int count = delete.executeUpdate();
                 deleteCount += count;
-                System.out.println("删除本快递单号" + expressNo + "的重复数据" + count + "笔。");
+                logger.info("删除本快递单号{}的重复数据{}笔。", expressNo, count);
             }
-            System.out.println("总计删除本公司重复快递记录" + deleteCount + "笔。");
+            logger.info("总计删除本公司重复快递记录{}笔。", deleteCount);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -107,7 +113,7 @@ public class MainClass {
                 exprsOrders.add(exprsOrder);
                 i++;
             }
-            System.out.println("快递公司方的有"+ i + "笔在我公司无记录。");
+            logger.info("快递公司方的有{}笔在我公司无记录。", i);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -118,7 +124,7 @@ public class MainClass {
         writeeExcel.write(exprsOrders, writeSheet);
         writeeExcel.finish();
         long end = System.currentTimeMillis();
-        System.out.println("TimeCost:" + (end - start) +"ms");
+        logger.info("TimeCost:{}ms", end - start);
     }
 
     private static void assembleSellOrder(ResultSet sellOrderResultSet, SellOrder sellOrd) throws SQLException {
