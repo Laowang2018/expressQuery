@@ -1,8 +1,9 @@
 package com.lw.dao;
 
-import com.lw.dto.ExpressOrder;
 import com.lw.dto.SellOrder;
 import com.lw.h2.H2Connection;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -11,14 +12,15 @@ import java.sql.Statement;
 import java.util.ArrayList;
 
 public class SellOrderDao {
+    public static Logger logger = LoggerFactory.getLogger(SellOrderDao.class);
     private static Connection conn = H2Connection.getInstance();
     private static String create = "CREATE TABLE IF NOT EXISTS `sell_order`  (" +
             "  `id` bigint(25) NOT NULL," +
             "  `status` varchar(30) DEFAULT NULL," +
-            "  `order_no` varchar(64) DEFAULT NULL," +
+            "  `order_no` varchar(1024) DEFAULT NULL," +
             "  `goods_nos` varchar(512) DEFAULT NULL," +
             "  `goods_names` varchar(1024) DEFAULT NULL," +
-            "  `count` int(8) NULL DEFAULT NULL," +
+            "  `count` int(8) DEFAULT NULL," +
             "  `outbound_status` varchar(18) DEFAULT NULL," +
             "  `express_company` varchar(30) DEFAULT NULL," +
             "  `express_no` varchar(30) DEFAULT NULL," +
@@ -33,7 +35,7 @@ public class SellOrderDao {
             ") ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compact";
     private static String insert = "INSERT INTO `sell_order`(`id`, `status`, `order_no`, `goods_nos`, `goods_names`, `count`, `outbound_status`, `express_company`, `express_no`, `express_cost`, `approximate_weight`, `province`, `city`, `district`, `order_time`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     public static void batchInsert(ArrayList<SellOrder> sellOrders) {
-        System.out.println("All parsed sell orders count:" + sellOrders.size());
+        logger.info("All parsed sell orders count: {} .", sellOrders.size());
         try {
             PreparedStatement pstm = conn.prepareStatement(insert);
             int canInsertCount = 0;
@@ -48,7 +50,7 @@ public class SellOrderDao {
             }
             pstm.executeBatch();
             pstm.clearBatch();
-            System.out.println("Insert success count:" + canInsertCount);
+            logger.info("Insert success count: {} .", canInsertCount);
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -4,7 +4,7 @@
 <Configuration status="WARN" monitorInterval="600">
     <!--properties:设置全局变量 -->
     <properties>
-        <property name="pattern">[%d][%t][%p]-%l-[%m]%n</property>
+        <property name="pattern">%d [%t][%p]-%l-[%m]%n</property>
         <!--LOG_HOME:指定当前日志存放的目录 -->
         <property name="LOG_HOME">/data/logs</property>
         <!--FILE_NAME:指定日志文件的名称 -->
@@ -67,15 +67,15 @@
         <!--name: 打印日志的类的包路径 -->
         <!--additivity: true当前的Logger打印的日志附加到Root，false仅仅打印到RollingFile -->
 <!--        <Logger name="org.springframework" level="INFO" />-->
-        <Logger name="com.lw" level="INFO">
-            <appender-ref ref="Console" />
-        </Logger>
+<!--        <Logger name="com.lw" level="INFO">-->
+<!--            <appender-ref ref="Console" />-->
+<!--        </Logger>-->
         <!--Root:日志默认打印到控制台 -->
-        <!--level日志级别: ALL < TRACE < DEBUG < INFO < WARN < ERROR < FATAL < OFF -->
-<!--        <Root level="all">-->
-<!--            <AppenderRef ref="Console" level="info" />-->
-<!--&lt;!&ndash;            <AppenderRef ref="RollingFileInfo" />&ndash;&gt;-->
+<!--        level日志级别: ALL < TRACE < DEBUG < INFO < WARN < ERROR < FATAL < OFF -->
+        <Root level="all">
+            <AppenderRef ref="Console" level="info" />
+<!--            <AppenderRef ref="RollingFileInfo" />-->
 <!--            <AppenderRef ref="RollingFileError" />-->
-<!--        </Root>-->
+        </Root>
     </Loggers>
 </Configuration>

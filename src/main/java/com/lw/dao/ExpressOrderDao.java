@@ -2,6 +2,8 @@ package com.lw.dao;
 
 import com.lw.dto.ExpressOrder;
 import com.lw.h2.H2Connection;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -10,17 +12,18 @@ import java.sql.Statement;
 import java.util.ArrayList;
 
 public class ExpressOrderDao {
+    public static Logger logger = LoggerFactory.getLogger(ExpressOrderDao.class);
     private static Connection conn = H2Connection.getInstance();
     private static String insert = "INSERT INTO `express_order`(`id`, `express_no`, `order_date`, `customer_no`, `province`, `city`, `weight`, `fee`, `check_cost`, `deviation`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     private static String create = "CREATE TABLE IF NOT EXISTS `express_order`(" +
             "`id` bigint(20) unsigned NOT NULL," +
             "`express_no` varchar(30) DEFAULT NULL,"+
-            "`order_date` varchar(15) DEFAULT NULL,"+
+            "`order_date` varchar(30) DEFAULT NULL,"+
             "`customer_no` varchar(15) DEFAULT NULL,"+
             "`province` varchar(30) DEFAULT NULL,"+
             "`city` varchar(30) DEFAULT NULL,"+
-            "`weight` DECIMAL(20,4) NOT NULL DEFAULT '0.0000',"+
-            "`fee` DECIMAL(20,4) NOT NULL DEFAULT '0.0000',"+
+            "`weight` DECIMAL(20,4) DEFAULT '0.0000',"+
+            "`fee` DECIMAL(20,4) DEFAULT '0.0000',"+
             "`check_cost` DECIMAL(20,4) NULL DEFAULT NULL,"+
             "`deviation` DECIMAL(20,4) NULL DEFAULT NULL,"+
             "PRIMARY KEY (`id`),"+
@@ -28,7 +31,7 @@ public class ExpressOrderDao {
             ") ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compact;";
 
     public static void batchInsert(ArrayList<ExpressOrder> orders) {
-        System.out.println("All parsed express orders count:" + orders.size());
+        logger.info("All parsed express orders count: {}.", orders.size());
         try {
             PreparedStatement pstm = conn.prepareStatement(insert);
             int canInsertCount = 0;
@@ -43,7 +46,7 @@ public class ExpressOrderDao {
             }
             pstm.executeBatch();
             pstm.clearBatch();
-            System.out.println("Insert success count:" + canInsertCount);
+            logger.info("Insert success count: {}.", canInsertCount);
         } catch (Exception e) {
             e.printStackTrace();
         }

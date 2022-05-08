@@ -5,12 +5,15 @@ import com.alibaba.excel.ExcelReader;
 import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.event.AnalysisEventListener;
 import com.lw.dto.ExpressOrder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
 public class ExpressOrderExcelRead {
+    public static Logger logger = LoggerFactory.getLogger(ExpressOrderExcelRead.class);
     public static ArrayList<ExpressOrder> readExcel(String filePath) {
         ArrayList<ExpressOrder> readResult = new ArrayList();
         ExcelReader reader = EasyExcel.read(filePath, ExpressOrder.class, new AnalysisEventListener<ExpressOrder>() {
@@ -23,7 +26,7 @@ public class ExpressOrderExcelRead {
             public void doAfterAllAnalysed(AnalysisContext analysisContext) {
                 SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss S");
                 String formatTime = simpleDateFormat.format(new Date());
-                System.out.println("One of the sheet finished time:" + formatTime + ". Total read lines:" + readResult.size());
+                logger.info("One of the sheet finished time:{}. Total read {} lines", formatTime, readResult.size());
             }
         }).build();
         reader.readAll();
