@@ -26,7 +26,7 @@ public class ExpressOrderExcelRead {
             public void doAfterAllAnalysed(AnalysisContext analysisContext) {
                 SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss S");
                 String formatTime = simpleDateFormat.format(new Date());
-                logger.info("One of the sheet finished time:{}. Total read {} lines", formatTime, readResult.size());
+                logger.info("----------【快递的】一个表单读取完成，当前时间是:{}. 当前总共读取{}条----------", formatTime, readResult.size());
             }
         }).build();
         reader.readAll();

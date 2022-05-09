@@ -26,7 +26,7 @@ public class SellOrderExcelRead {
             public void doAfterAllAnalysed(AnalysisContext analysisContext) {
                 SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss S");
                 String formatTime = simpleDateFormat.format(new Date());
-                logger.info("One of the sheet finished time:{}. Total read {} lines.", formatTime, result.size());
+                logger.info("----------【公司的】一个表单读取完成，当前时间是:{}. 当前总共读取{}条----------", formatTime, result.size());
             }
         }).build();
         reader.readAll();

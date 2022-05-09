@@ -17,9 +17,9 @@ public class SellOrderDao {
     private static String create = "CREATE TABLE IF NOT EXISTS `sell_order`  (" +
             "  `id` bigint(25) NOT NULL," +
             "  `status` varchar(30) DEFAULT NULL," +
-            "  `order_no` varchar(1024) DEFAULT NULL," +
-            "  `goods_nos` varchar(512) DEFAULT NULL," +
-            "  `goods_names` varchar(1024) DEFAULT NULL," +
+            "  `order_no` varchar(2048) DEFAULT NULL," +
+            "  `goods_nos` varchar(2048) DEFAULT NULL," +
+            "  `goods_names` varchar(4096) DEFAULT NULL," +
             "  `count` int(8) DEFAULT NULL," +
             "  `outbound_status` varchar(18) DEFAULT NULL," +
             "  `express_company` varchar(30) DEFAULT NULL," +
@@ -35,7 +35,7 @@ public class SellOrderDao {
             ") ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compact";
     private static String insert = "INSERT INTO `sell_order`(`id`, `status`, `order_no`, `goods_nos`, `goods_names`, `count`, `outbound_status`, `express_company`, `express_no`, `express_cost`, `approximate_weight`, `province`, `city`, `district`, `order_time`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     public static void batchInsert(ArrayList<SellOrder> sellOrders) {
-        logger.info("All parsed sell orders count: {} .", sellOrders.size());
+        logger.info("------------准备 插入数据库【本公司】定单{}条.------------", sellOrders.size());
         try {
             PreparedStatement pstm = conn.prepareStatement(insert);
             int canInsertCount = 0;
@@ -50,7 +50,7 @@ public class SellOrderDao {
             }
             pstm.executeBatch();
             pstm.clearBatch();
-            logger.info("Insert success count: {} .", canInsertCount);
+            logger.info("成功 插入数据库【本公司】定单{}条.", canInsertCount);
         } catch (Exception e) {
             e.printStackTrace();
         }

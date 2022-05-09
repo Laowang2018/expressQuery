@@ -31,7 +31,7 @@ public class ExpressOrderDao {
             ") ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compact;";
 
     public static void batchInsert(ArrayList<ExpressOrder> orders) {
-        logger.info("All parsed express orders count: {}.", orders.size());
+        logger.info("------------准备 插入数据库【快递公司】快递单{}条.------------", orders.size());
         try {
             PreparedStatement pstm = conn.prepareStatement(insert);
             int canInsertCount = 0;
@@ -46,7 +46,7 @@ public class ExpressOrderDao {
             }
             pstm.executeBatch();
             pstm.clearBatch();
-            logger.info("Insert success count: {}.", canInsertCount);
+            logger.info("------------成功 插入数据库【快递公司】快递单{}条.------------", canInsertCount);
         } catch (Exception e) {
             e.printStackTrace();
         }

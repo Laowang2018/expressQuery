@@ -15,32 +15,34 @@ import java.math.BigDecimal;
 public class SellOrder {
     @ExcelProperty(value="id")
     private Integer id;
-    @ExcelProperty(value="status")
+    @ExcelProperty(value="系统订单状态")
     private String status;
-    @ExcelProperty(value="order_no")
+    @ExcelProperty(value="订单号")
     private String orderNo;
-    @ExcelProperty(value="goods_nos")
+    @ExcelProperty(value="商品编码")
     private String goodsNos;
-    @ExcelProperty(value="goods_names")
+    @ExcelProperty(value="商品名称")
     private String goodsNames;
-    @ExcelProperty(value="count")
+    @ExcelProperty(value="数量")
     private Integer count;
-    @ExcelProperty(value="outbound_status")
+    @ExcelProperty(value="库存状况")
     private String outboundStatus;
-    @ExcelProperty(value="express_company")
+    @ExcelProperty(value="快递公司")
     private String expressCompany;
-    @ExcelProperty(value="express_no")
+    @ExcelProperty(value="快递单号")
     private String expressNo;
-    @ExcelProperty(value="express_cost")
+    @ExcelProperty(value="快递成本")
     private BigDecimal expressCost;
-    @ExcelProperty(value="approximate_weight")
+    @ExcelProperty(value="估重")
     private BigDecimal approximateWeight;
-    @ExcelProperty(value="province")
+    @ExcelProperty(value="省")
     private String province;
-    @ExcelProperty(value="city")
+    @ExcelProperty(value="市")
     private String city;
-    @ExcelProperty(value="district")
+    @ExcelProperty(value="区")
     private String district;
-    @ExcelProperty(value="order_time")
+    @ExcelProperty(value="下单时间")
     private String orderTime;
+    @ExcelProperty(value="快递公司计费")
+    private BigDecimal fee;
 }

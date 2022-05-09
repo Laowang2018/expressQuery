@@ -1,7 +1,6 @@
 package com.lw.dto;
 
 import com.alibaba.excel.annotation.ExcelProperty;
-import com.alibaba.excel.annotation.format.DateTimeFormat;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -16,23 +15,23 @@ import java.math.BigDecimal;
 public class ExpressOrder {
     @ExcelProperty(value="id")
     private Integer id;
-    @ExcelProperty(value="express_no")
+    @ExcelProperty(value="运单编号")
     private String expressNo;
-    @ExcelProperty(value="order_date")
+    @ExcelProperty(value="寄件时间")
     private String orderDate;
-    @ExcelProperty(value="customer_no")
+    @ExcelProperty(value="客户名称")
     private String customerNo;
-    @ExcelProperty(value="province")
+    @ExcelProperty(value="收件省份")
     private String province;
-    @ExcelProperty(value="city")
+    @ExcelProperty(value="目的地")
     private String city;
-    @ExcelProperty(value="weight")
+    @ExcelProperty(value="包裹计费重量")
     private BigDecimal weight;
-    @ExcelProperty(value="fee")
+    @ExcelProperty(value="总运费")
     private BigDecimal fee;
-    @ExcelProperty(value="check_cost")
+    @ExcelProperty(value="运单运费")
     private BigDecimal checkCost;
-    @ExcelProperty(value="deviation")
+    @ExcelProperty(value="内部计费重量")
     private BigDecimal deviation;
 
 }

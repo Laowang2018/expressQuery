@@ -50,6 +50,8 @@ public class MainClass {
             query1 = conn.prepareStatement(sql1);
             ResultSet resultSet = query1.executeQuery();
             int deleteCount = 0;
+            int bigestNo = 0;
+            String bigestExpressNo = "";
             while (resultSet.next()) {
                 String expressNo = resultSet.getString(1);
                 PreparedStatement query2 = conn.prepareStatement(sql2);
@@ -65,24 +67,28 @@ public class MainClass {
                 update.setString(1, goods);
                 update.setString(2, names);
                 update.setString(3, expressNo);
-                int i = update.executeUpdate();
+                update.executeUpdate();
 
                 PreparedStatement delete = conn.prepareStatement(sql4);
                 delete.setString(1, expressNo);
                 int count = delete.executeUpdate();
+                if(count >= bigestNo) {
+                    bigestNo = count;
+                    bigestExpressNo = expressNo;
+                }
                 deleteCount += count;
             }
-            logger.info("总计删除本公司重复快递记录{}笔。", deleteCount);
+            logger.info("------------单品最多的一单是{}，有{}个单品.------------", bigestExpressNo, bigestNo+1);
+            logger.info("------------总计删除本公司重复快递记录{}笔.------------", deleteCount);
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        String sqlSellOrder = "select * from sell_order;";
+        String sqlSellOrder = "select s.id,s.`status`,s.order_no,s.goods_nos,s.goods_names,s.count,s.outbound_status,s.express_company,s.express_no,s.express_cost,s.approximate_weight,s.province,s.city,s.district,s.order_time,e.fee from sell_order s left outer join express_order e on e.express_no=s.express_no;";
         ArrayList<SellOrder> sellOrder = new ArrayList<>();
         try {
             PreparedStatement sellpstm = conn.prepareStatement(sqlSellOrder);
             ResultSet sellOrderResultSet = sellpstm.executeQuery();
-            int i=0;
             while(sellOrderResultSet.next()) {
                 SellOrder sellOrd = new SellOrder();
                 assembleSellOrder(sellOrderResultSet, sellOrd);
@@ -111,7 +117,7 @@ public class MainClass {
                 exprsOrders.add(exprsOrder);
                 i++;
             }
-            logger.info("快递公司方的有{}笔在我公司无记录。", i);
+            logger.info("------------快递公司方的有{}笔在我公司无记录.------------", i);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -122,7 +128,7 @@ public class MainClass {
         writeeExcel.write(exprsOrders, writeSheet);
         writeeExcel.finish();
         long end = System.currentTimeMillis();
-        logger.info("TimeCost:{}ms", end - start);
+        logger.info("------------TimeCost:{}ms------------", end - start);
     }
 
     private static void assembleSellOrder(ResultSet sellOrderResultSet, SellOrder sellOrd) throws SQLException {
@@ -141,6 +147,7 @@ public class MainClass {
         sellOrd.setCity(sellOrderResultSet.getString(13));
         sellOrd.setDistrict(sellOrderResultSet.getString(14));
         sellOrd.setOrderTime(sellOrderResultSet.getString(15));
+        sellOrd.setFee(sellOrderResultSet.getBigDecimal(16));
     }
 
     private static void assembleExpressOrder(ResultSet resultSet, ExpressOrder expressOrder) throws SQLException {
