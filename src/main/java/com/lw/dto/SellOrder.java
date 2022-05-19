@@ -45,4 +45,6 @@ public class SellOrder {
     private String orderTime;
     @ExcelProperty(value="快递公司计费")
     private BigDecimal fee;
+    @ExcelProperty(value="快递公司计费重量")
+    private BigDecimal weight;
 }

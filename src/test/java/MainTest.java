@@ -20,13 +20,13 @@ public class MainTest {
     @Test
     public void MainTest() {
         long start = System.currentTimeMillis();
-        ArrayList<SellOrder> sellOrders = SellOrderExcelRead.readExcel("C:\\Users\\wsj60\\Desktop\\韵达快递费账单\\导出\\9月韵达.xlsx");
-        SellOrderDao.createTable();
-        SellOrderDao.batchInsert(sellOrders);
+//        ArrayList<SellOrder> sellOrders = SellOrderExcelRead.readExcel("C:\\Users\\wsj60\\Desktop\\韵达快递费账单\\导出\\9月韵达.xlsx");
+//        SellOrderDao.createTable();
+//        SellOrderDao.batchInsert(sellOrders);
 
-        ArrayList<ExpressOrder> expressOrders = ExpressOrderExcelRead.readExcel("C:\\Users\\wsj60\\Desktop\\韵达快递费账单\\韵达黄林峰对账单 2021-09.xlsx");
-        ExpressOrderDao.createTable();
-        ExpressOrderDao.batchInsert(expressOrders);
+//        ArrayList<ExpressOrder> expressOrders = ExpressOrderExcelRead.readExcel("C:\\Users\\wsj60\\Desktop\\韵达快递费账单\\韵达黄林峰对账单 2021-09.xlsx");
+//        ExpressOrderDao.createTable();
+//        ExpressOrderDao.batchInsert(expressOrders);
 
 
         Connection conn = H2Connection.getInstance();

@@ -8,7 +8,6 @@ import java.util.ArrayList;
 public class SellOrderReadTest {
     @Test
     public void testRead() {
-        ArrayList<SellOrder> sellOrders = SellOrderExcelRead.readExcel("C:\\Users\\wsj60\\Desktop\\韵达快递费账单\\导出\\9月韵达.xlsx");
-        System.out.println(sellOrders.size());
+        SellOrderExcelRead.readExcel("C:\\Users\\wsj60\\Desktop\\韵达快递费账单\\导出\\9月韵达.xlsx");
     }
 }

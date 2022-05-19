@@ -37,7 +37,7 @@ public class ExpressOrderDao {
             int canInsertCount = 0;
             for(int i=0; i<orders.size(); i++) {
                 ExpressOrder expressOrder = orders.get(i);
-                if(expressOrder.getId() == null) {
+                if(expressOrder.getId() == null || expressOrder.getId()==0) {
                     break;
                 }
                 setPrepareParams(pstm, expressOrder);

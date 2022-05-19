@@ -24,22 +24,18 @@ public class MainClass {
     public static void main(String[] args) {
         //C:\Users\wsj60\Desktop\韵达快递费账单\韵达黄林峰对账单2021-09.xlsx
         String expressFile = args[0];
-//        String expressFile = "C:\\Users\\wsj60\\Desktop\\run\\21-5月.xls";
+//        String expressFile = "D:\\DataCenter\\IDEA_WorkSpace\\expressQuery\\out\\artifacts\\expressQuery_jar\\快递.xlsx";
 
         //C:\Users\wsj60\Desktop\韵达快递费账单\导出\9月韵达.xlsx
         String sellFile = args[1];
-//        String sellFile = "C:\\Users\\wsj60\\Desktop\\run\\20210501.xlsx";
-
-        long start = System.currentTimeMillis();
-        ArrayList<SellOrder> sellOrders = SellOrderExcelRead.readExcel(sellFile);
+//        String sellFile = "D:\\DataCenter\\IDEA_WorkSpace\\expressQuery\\out\\artifacts\\expressQuery_jar\\公司.xlsx";
         SellOrderDao.createTable();
-        SellOrderDao.batchInsert(sellOrders);
-
-        ArrayList<ExpressOrder> expressOrders = ExpressOrderExcelRead.readExcel(expressFile);
         ExpressOrderDao.createTable();
-        ExpressOrderDao.batchInsert(expressOrders);
-
-
+        long start = System.currentTimeMillis();
+        SellOrderExcelRead.readExcel(sellFile);
+        ExpressOrderExcelRead.readExcel(expressFile);
+        long readExpressEnd = System.currentTimeMillis();
+        logger.info("------------读取并插入【公司】和【快递】文件总用时{}ms------------", readExpressEnd - start);
         Connection conn = H2Connection.getInstance();
         PreparedStatement query1 = null;
         try {
@@ -83,8 +79,10 @@ public class MainClass {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        long progressSellEnd = System.currentTimeMillis();
+        logger.info("------------处理公司文件用时{}ms------------", progressSellEnd - readExpressEnd);
 
-        String sqlSellOrder = "select s.id,s.`status`,s.order_no,s.goods_nos,s.goods_names,s.count,s.outbound_status,s.express_company,s.express_no,s.express_cost,s.approximate_weight,s.province,s.city,s.district,s.order_time,e.fee from sell_order s left outer join express_order e on e.express_no=s.express_no;";
+        String sqlSellOrder = "select s.id,s.`status`,s.order_no,s.goods_nos,s.goods_names,s.count,s.outbound_status,s.express_company,s.express_no,s.express_cost,s.approximate_weight,s.province,s.city,s.district,s.order_time,e.fee,e.weight from sell_order s left outer join express_order e on e.express_no=s.express_no;";
         ArrayList<SellOrder> sellOrder = new ArrayList<>();
         try {
             PreparedStatement sellpstm = conn.prepareStatement(sqlSellOrder);
@@ -97,15 +95,19 @@ public class MainClass {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        long selectSellEnd = System.currentTimeMillis();
+        logger.info("------------查询公司文件用时{}ms------------", selectSellEnd - progressSellEnd);
 
-        String fileNam = "./deleteDuplicationSellOrder"+System.currentTimeMillis()+".xlsx";
-        ExcelWriter writeeExc = EasyExcel.write(fileNam, SellOrder.class).build();
-        WriteSheet writeShe = EasyExcel.writerSheet("result1").build();
+        String fileNam = "./result"+System.currentTimeMillis()+".xlsx";
+        ExcelWriter writeeExc = EasyExcel.write(fileNam).build();
+        WriteSheet writeShe = EasyExcel.writerSheet(0, "公司无重复").head(SellOrder.class).build();
         writeeExc.write(sellOrder, writeShe);
-        writeeExc.finish();
-
+//        writeeExc.finish();
+        long generateSellEnd = System.currentTimeMillis();
+        logger.info("------------导出公司文件用时{}ms------------", generateSellEnd - selectSellEnd);
 
         String sql = "select * from express_order where express_no not in(select express_no from sell_order where express_no is not null);";
+        //String sql = "select e.* from express_order e left outer join sell_order s on e.express_no=s.express_no where s.express_no is null;";
         ArrayList<ExpressOrder> exprsOrders = new ArrayList<>();
         try {
             PreparedStatement pstm = conn.prepareStatement(sql);
@@ -122,13 +124,13 @@ public class MainClass {
             e.printStackTrace();
         }
 
-        String fileName = "./cantfoundinSellOrder"+System.currentTimeMillis()+".xlsx";
-        ExcelWriter writeeExcel = EasyExcel.write(fileName, ExpressOrder.class).build();
-        WriteSheet writeSheet = EasyExcel.writerSheet("result1").build();
-        writeeExcel.write(exprsOrders, writeSheet);
-        writeeExcel.finish();
+//        ExcelWriter writeeExcel = EasyExcel.write(fileName, ExpressOrder.class).build();
+        WriteSheet writeSheet = EasyExcel.writerSheet(1, "快递无记录").head(ExpressOrder.class).build();
+        writeeExc.write(exprsOrders, writeSheet);
+        writeeExc.finish();
         long end = System.currentTimeMillis();
-        logger.info("------------TimeCost:{}ms------------", end - start);
+        logger.info("------------导出【快递】文件用时:{}ms------------", end - generateSellEnd);
+        logger.info("------------总计用时:{}ms------------", end - start);
     }
 
     private static void assembleSellOrder(ResultSet sellOrderResultSet, SellOrder sellOrd) throws SQLException {
@@ -148,6 +150,7 @@ public class MainClass {
         sellOrd.setDistrict(sellOrderResultSet.getString(14));
         sellOrd.setOrderTime(sellOrderResultSet.getString(15));
         sellOrd.setFee(sellOrderResultSet.getBigDecimal(16));
+        sellOrd.setWeight(sellOrderResultSet.getBigDecimal(17));
     }
 
     private static void assembleExpressOrder(ResultSet resultSet, ExpressOrder expressOrder) throws SQLException {

@@ -41,7 +41,7 @@ public class SellOrderDao {
             int canInsertCount = 0;
             for(int i=0; i<sellOrders.size(); i++) {
                 SellOrder sellOrder = sellOrders.get(i);
-                if(sellOrder.getId() == null) {
+                if(sellOrder.getId() == null || sellOrder.getId() == 0) {
                     break;
                 }
                 setPrepareParams(pstm, sellOrder);

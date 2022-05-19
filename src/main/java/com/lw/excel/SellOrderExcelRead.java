@@ -4,6 +4,7 @@ import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.ExcelReader;
 import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.event.AnalysisEventListener;
+import com.lw.dao.SellOrderDao;
 import com.lw.dto.SellOrder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,23 +15,28 @@ import java.util.Date;
 
 public class SellOrderExcelRead {
     public static Logger logger = LoggerFactory.getLogger(SellOrderExcelRead.class);
-    public static ArrayList<SellOrder> readExcel(String filePath) {
+    public static void readExcel(String filePath) {
         ArrayList<SellOrder> result = new ArrayList<>();
         ExcelReader reader = EasyExcel.read(filePath, SellOrder.class, new AnalysisEventListener<SellOrder>() {
             @Override
             public void invoke(SellOrder sellOrder, AnalysisContext analysisContext) {
-                result.add(sellOrder);
+                if(sellOrder.getId() == null || sellOrder.getId() == 0) {
+                    logger.error("请检查【本公司】表单的id列为空的问题。");
+                } else {
+                    result.add(sellOrder);
+                }
             }
 
             @Override
             public void doAfterAllAnalysed(AnalysisContext analysisContext) {
+                SellOrderDao.batchInsert(result);
                 SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss S");
                 String formatTime = simpleDateFormat.format(new Date());
-                logger.info("----------【公司的】一个表单读取完成，当前时间是:{}. 当前总共读取{}条----------", formatTime, result.size());
+                logger.info("----------【公司的】一个表单读取并插入完成，当前时间是:{}. 当前总共读取{}条----------", formatTime, result.size());
+                result.clear();
             }
         }).build();
         reader.readAll();
         reader.finish();
-        return result;
     }
 }
